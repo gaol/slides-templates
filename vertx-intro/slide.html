@@ -1,0 +1,507 @@
+<!--
+  50 minutes slides
+    - 30 minutes on What is Vert.x
+    - 10 mintues on Vert.x Ecosystem
+    - 10 minutes on How Vert.x is relased and Q/A
+-->
+
+<!--
+    TODO: remove core api slides(createServer(), fileSystem, etc)
+          focus on Verticle and EventBus
+          add streaming / logging into one whole picture, including sockJS, websocket as well.
+    -->
+<section>
+  <h1><br></h1>
+  <div><br></div>
+  <h2 style="text-align: justify;">Introduction to Eclipse Vert.x</h2>
+  <div style="text-align: justify;">
+    <span>Lin Gao @ JBoss SET</span><br>
+  </div>
+  <div style="text-align: justify;">
+    <br>
+  </div>
+  <div style="text-align: justify;">
+    <br />
+  </div>
+</section>
+
+<section>
+  <h3>Agenda</h3>
+  <p></p>
+  <ul>
+    <li>
+      <span>What is Eclipse Vert.x</span><br>
+    </li>
+    <li>
+      <span>Starts Coding</span><br>
+    </li>
+    <li>
+      <span>Vert.x Ecosystem</span><br>
+    </li>
+    <li>
+      <span>Q/A</span><br>
+    </li>
+  </ul>
+  <p></p>
+  <div>
+    <ul></ul><br/>
+    <ul></ul>
+  </div>
+</section>
+
+<section>
+  <h2 class="absolute-element">What is Eclipse Vert.X?</h2>
+  <blockquote class="absolute-element fragment">"
+    Eclipse Vert.x is a
+    tool-kit for building reactive applications on the JVM."
+    <br><br>
+  </blockquote>
+  <br>
+</section>
+
+<section>
+  <h3>Toolkit</h3>
+  <p></p>
+  <ul>
+    <li class="fragment" data-fragment-index="0">
+      <span>Not a container, Not a framework</span><br>
+      <ul><li><a href="https://vertx.io/docs/guide-for-java-devs/#_what_is_vert_x">https://vertx.io/docs/guide-for-java-devs/#_what_is_vert_x</a></li></ul>
+    </li>
+    <li class="fragment" data-fragment-index="1">
+      <span>Lightweight regular Java library</span><br>
+    </li>
+    <li class="fragment" data-fragment-index="2">
+      <span>Event driven APIs</span><br>
+    </li>
+    <li class="fragment" data-fragment-index="3">
+      <span>Based on Netty Project</span><br>
+    </li>
+  </ul>
+  <br>
+</section>
+
+<section>
+  <h3>Reactive Applications</h3>
+  <div>
+    <img src="reactive-traits.svg" style="width: 800px; height: 400px;"/>
+  </div>
+  <div style="text-align: justify; text-align: center;">
+    <a href="https://www.reactivemanifesto.org/" target="_blank">The Reactive Manifesto</a>
+  </div>
+</section>
+
+<section>
+  <h3>Polyglot</h3>
+  <div>
+    <blockquote>"You can use Vert.x with multiple languages including Java, JavaScript, Groovy, Ruby, Ceylon, Scala and Kotlin."
+      <br /><br />
+    </blockquote>
+  </div>
+  <div class="fragment fade-down">
+    On JVM
+  </div>
+</section>
+
+<section data-transition="none" >
+  <h3>Reactor</h3>
+  <div>
+    <img src="event-loop.png" style="width: 700px;"/>
+  </div>
+</section>
+<section data-transition="none" data-transition-speed="fast">
+  <h3>Multi-Reactor</h3>
+  <div>
+    <img src="event-loop_multiple.png" style="width: 700px;" />
+  </div>
+</section>
+
+<section>
+  <h3>The Golden Rule</h3>
+  <div>
+    <ul>
+      <li>Don’t Block the Event Loop</li>
+      <li class="fragment fade-down">Don’t call us, we’ll call you</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h3>Run Blocking Codes</h3>
+  <div>
+    <pre><code  data-line-numbers="1">vertx.executeBlocking(future -> {
+      String result = someAPI.blockingMethod("hello");
+      future.complete(result);
+    }, res -> {
+      System.out.println("The result is: " + res.result());
+    });</code></pre>
+  </div>
+  <div class="fragment fade-down">
+    executed on the Vert.x worker pool
+  </div>
+  <div class="fragment fade-down">
+    How about very long running codes?
+  </div>
+</section>
+
+<section>
+  <h3>What does Vert.x Application look like?</h3>
+</section>
+
+<section>
+  <section>
+    <h2>JAVA</h2>
+    <div>
+      <a href="Server.java" target="_blank">Server.java:</a>
+      <pre><code data-line-numbers="2,4">import io.vertx.core.AbstractVerticle;
+public class Server extends AbstractVerticle {
+  public void start() {
+    vertx.createHttpServer().requestHandler(req -> {
+      req.response()
+        .putHeader("content-type", "text/plain")
+        .end("Hello from Vert.x! " + Thread.currentThread());
+    }).listen(8080);
+  }
+}</code></pre>
+    </div>
+    <div><pre><code>docker run -i -t --rm -p 8080:8080 -v $PWD:/verticles docker.io/aoingl/vert3-exec-jdk run /verticles/Server.java</code></pre></div>
+  </section>
+  <section>
+    <h2>JAVASCRIPT</h2>
+    <div>
+      <a href="server.js" target="_blank">server.js:</a>
+      <pre><code data-line-numbers="2">vertx.createHttpServer()
+  .requestHandler(function (req) {
+    req.response()
+      .putHeader("content-type", "text/plain")
+      .end("Hello from Vert.x!");
+}).listen(8080);</code></pre>
+    </div>
+    <div><pre><code>docker run -i -t --rm -p 8080:8080 -v $PWD:/verticles docker.io/vertx/vertx3-exec run /verticles/server.js</code></pre></div>
+  </section>
+
+</section>
+
+
+<section>
+  <h4>Vert.x Core Launcher</h4>
+  <div>
+      <pre><code>io.vertx.core.Launcher</code></pre>
+  </div>
+  <div><pre><code data-line-numbers="16">&lt;plugin&gt;
+        &lt;groupId&gt;io.reactiverse&lt;/groupId&gt;
+        &lt;artifactId&gt;vertx-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${vertx-maven-plugin.version}&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;id&gt;vmp&lt;/id&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;initialize&lt;/goal&gt;
+              &lt;goal&gt;package&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+        &lt;configuration&gt;
+          &lt;redeploy&gt;true&lt;/redeploy&gt;
+          &lt;verticle&gt;${vertx.verticle}&lt;/verticle&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;</code></pre>
+  </div>
+</section>
+
+<section>
+  <h4>Vert.x Core</h4>
+  <div>
+      <pre><code>Vertx vertx = Vertx.vertx();</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li class="fragment" data-fragment-index="0">HttpServer / HttpClient / WebSockets</li>
+      <ul>
+        <li class="fragment" data-fragment-index="0"><pre><code>vertx.createHttpServer(); vertx.createHttpClient();</code></pre></li>
+      </ul>
+      <li class="fragment" data-fragment-index="0">NetServer / NetClient</li>
+      <ul>
+        <li class="fragment" data-fragment-index="0">
+          <pre><code>vertx.createNetServer(); vertx.createNetClient();</code></pre>
+        </li>
+      </ul>
+      <li class="fragment" data-fragment-index="0">DatagramSocket / DnsClient</li>
+      <ul>
+        <li class="fragment" data-fragment-index="0">
+          <pre><code>vertx.createDatagramSocket(); vertx.createDnsClient();</code></pre>
+        </li>
+      </ul>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h4>Vert.x Core</h4>
+  <div>
+    <pre><code>Vertx vertx = Vertx.vertx();</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li>Filesystem</li>
+      <ul>
+        <li>
+          <pre><code>vertx.fileSystem();</code></pre>
+        </li>
+      </ul>
+      <li class="fragment" data-fragment-index="0">Timer</li>
+      <ul>
+        <li class="fragment" data-fragment-index="0">
+          <pre><code>vertx.setTimer(long delay, Handler&lt;Long&gt; handler);</code></pre>
+          <pre><code>vertx.setPeriodic(long delay, Handler&lt;Long&gt; handler);</code></pre>
+        </li>
+      </ul>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h4>Verticle</h4>
+  <div>
+    <pre><code>vertx.deployVerticle(String name, 
+      Handler&lt;AsyncResult&lt;String&gt;&gt; completionHandler);</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li>Block of codes that get deployed and run by Vert.x</li>
+      <li class="fragment" data-fragment-index="0">Verticles have a simple start / stop life-cycle</li>
+      <li class="fragment" data-fragment-index="1">2 types of Verticles:</li>
+      <ul class="fragment" data-fragment-index="1">
+        <li>Standard Verticle</li>
+        <li>Worker Verticle</li>
+      </ul>
+      <li class="fragment" data-fragment-index="2">Single-threaded</li>
+      <li class="fragment" data-fragment-index="3">Can be deployed multiple times</li>
+      <li class="fragment" data-fragment-index="4">Communicate with each other via EventBus</li>
+    </ul>
+  </div>
+</section>
+
+<section data-transition="none">
+  <h4>Event Bus</h4>
+  <div>
+    <pre><code>EventBus eventBus = vertx.eventBus();</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li class="fragment" data-fragment-index="0">The Nervous system of Vert.x</li>
+      <li class="fragment" data-fragment-index="1">Register handlers for any address</li>
+      <li class="fragment" data-fragment-index="2">Send or publish messages to any address</li>
+      <li class="fragment" data-fragment-index="3">Types of messages:</li>
+        <ul class="fragment" data-fragment-index="3">
+          <li>Primitive Types / Buffer</li>
+          <li>JsonObject / JsonArray</li>
+          <li>Any type with codecs registed</li>
+        </ul>
+    </ul>
+  </div>
+</section>
+
+<section data-transition="none">
+  <h4>Event Bus</h4>
+  <div>
+    <pre><code>EventBus eventBus = vertx.eventBus();</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li>Message Delivery:</li>
+      <ul>
+        <li>Point-to-Point:<pre><code>eventBus.send(String address, Object message);</code></pre></li>
+        <li>Request / Response:<pre><code>eventBus.send(String address, Object message,
+            Handler&lt;AsyncResult&lt;Message&lt;T&gt;&gt;&gt; replyHandler);</code></pre></li>
+        <li>Publish / Subscribe:<pre><code>eventBus.publish(String address, Object message);</code></pre></li>
+      </ul>
+      <li>Best-effort delivery</li>
+    </ul>
+  </div>
+</section>
+
+<section data-transition="none">
+  <h4>Shared Data</h4>
+  <div>
+    <pre><code>SharedData sharedData = vertx.sharedData();</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li class="fragment" data-fragment-index="0">A single instance of SharedData per Vertx instance</li>
+      <li class="fragment" data-fragment-index="1">Share data safely between different parts</li>
+      <li class="fragment" data-fragment-index="2">Locally and Cluster-wide</li>
+      <li class="fragment" data-fragment-index="3">Immutable types and types implemeting Shareable interface</li>
+    </ul>
+  </div>
+</section>
+
+<section data-transition="none">
+  <h4>Typical Vert.x Web application</h4>
+  <div>
+    <img src="event-bus.png" />
+  </div>
+</section>
+
+<section>
+  <h4>Clusting Mode</h4>
+  <div>
+    <pre><code>EventBusOptions eventBusOptions = new EventBusOptions()
+        .setClustered(true)
+        .setClusterPublicHost("192.168.1.85").setClusterPublicPort(5701);
+Vertx vertx = Vertx.vertx(new VertxOptions().setEventBusOptions(eventBusOptions));</code></pre>
+  </div>
+  <div>
+    <ul>
+      <li class="fragment" data-fragment-index="0">Cluster manager maintain the membership of Vert.x nodes</li>
+      <li class="fragment" data-fragment-index="1">Vert.x cluster managers are pluggable</li>
+      <li class="fragment" data-fragment-index="2">Maintaining cluster wide topic subscriber lists</li>
+      <li class="fragment" data-fragment-index="3">Distributed Map, Locks, Counters</li>
+      <li class="fragment" data-fragment-index="4">Do <b>NOT</b> handle the event bus inter-node transport</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h4>Vert.x Components</h4>
+  <div>
+    <img src="vertx_components.png" style="width: 700px;"/>
+  </div>
+</section>
+
+<section>
+  <h4>Rxifying Vert.x Codes</h4>
+  <div><pre><code>vertx.fileSystem()
+           .readFile(path, handler -> {
+               if (handler.succeeded()) {
+                   System.out.println(handler.result());
+               } else {
+                   handler.cause().printStackTrace();
+               }
+           });</code></pre>
+    
+  </div>
+  <div><pre><code>vertx.fileSystem()
+           .rxOpen(path, new OpenOptions())
+           .flatMapPublisher(AsyncFile::toFlowable)
+           .subscribe(System.out::println, Throwable::printStackTrace);</code></pre>
+  </div>
+</section>
+
+
+<section>
+  <h4>Vert.x in Quarkus</h4>
+  <div>
+      <div><pre><code>@ApplicationScoped
+public class GreetingService {
+    @ConsumeEvent("greeting")
+    public String greeting(String name) {
+        return "Hello " + name;
+    }
+}</code></pre>
+      </div>
+      <div><pre><code>@Path("/hello")
+public class EventResource {
+    @Inject EventBus bus;
+    @GET
+    @Path("/async/{name}")
+    public CompletionStage&lt;String&gt; hello(@PathParam("name") String name) {
+        return bus.&lt;String&gt;send("greeting", name)
+                .thenApply(Message::body);
+    }
+}</code></pre></div>
+  </div>
+</section>
+
+<section>
+  <h3>How to start</h3>
+  <div>
+    <ul>
+      <li><a href="https://github.com/vert-x3/vertx-maven-starter" target="_blank">vertx-maven-starter</a></li>
+      <li><a href="https://github.com/vert-x3/vertx-gradle-starter" target="_blank">vertx-gradle-starter</a></li>
+      <li class="fragment fade-down"><a href="https://start.vertx.io/" target="_blank">Vertx Starter Website</a></li>
+      <li class="fragment fade-down"><a href="https://reactiverse.io/vertx-maven-plugin/" target="_blank">Vertx Maven Plugin</a></li>
+    </ul>
+  </div>
+  <div class="fragment fade-down">
+    <ul>
+      <li><a href="https://github.com/gaol/vertx-demos" target="_blank">Vertx Demos</a></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h3>Vert.x Ecosystem</h3>
+  <div>
+    <ul>
+      <li>Website</li>
+      <ul>
+        <li><a href="vertx.io">vertx.io</a></li>
+      </ul>
+      <li>Google Groups</li>
+      <ul>
+        <li>
+          <a href="https://groups.google.com/forum/#!forum/vertx">#!forum/vertx</a>
+        </li>
+        <li>
+          <a href="https://groups.google.com/forum/#!forum/vertx-dev">#!forum/vertx-dev</a>
+        </li>
+      </ul>
+      <li>Github</li>
+      <ul>
+        <li>
+          <a href="https://github.com/eclipse/vert.x">https://github.com/eclipse/vert.x</a>
+        </li>
+        <li>
+          <a href="https://github.com/vert-x3/wiki/wiki">https://github.com/vert-x3/wiki/wiki</a>
+        </li>
+      </ul>
+      <li>Gitter</li>
+      <ul>
+        <li><a href="https://gitter.im/eclipse-vertx/vertx-users">https://gitter.im/eclipse-vertx/vertx-users</a></li>
+      </ul>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h3>The Vert.x Team</h3>
+  <div>
+    <ul>
+      <li>Project Lead: Julien Viet</li>
+      <li><a href="https://github.com/vert-x3/wiki/wiki/Vert.x-3-Official-stack-and-component-maintainers#component-maintainers">Vert.x Component Maintainers</a></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h3>How to release Vert.x</h3>
+  <div>
+    <ul>
+      <li>About each 8 weeks a release</li>
+      <li>In community, new tag for every component even there is no issues fixed.</li>
+      <li>Release to npmjs registry, Bower, Webjars, Homebrew, Starter Projects</li>
+      <li>Docker images</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h3>Vert.x Support</h3>
+  <div>
+    <ul>
+      <li>Community support</li>
+      <ul>
+        <li><a href="https://vertx.io/docs/">Community Official Components Documentation</a></li>
+      </ul>
+      <li>Commercial support(3.6.3.redhat-00011 in RHOAR)</li>
+      <ul>
+        <li><a href="https://access.redhat.com/articles/3985881">Commercial Supported Components</a></li>
+      </ul>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h3>Thanks</h3>
+  <div>Q / A</div>
+</section>

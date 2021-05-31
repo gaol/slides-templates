@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Vertx Introduction</title>
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="../assets/css/reset.css">
+        <link rel="stylesheet" href="../assets/css/reveal.css">
+        <!-- Themes: black, white, beige, blood, moon, simple, solarized, template, league, night, serif, sky -->
+        <link rel="stylesheet" href="../assets/theme/moon.css" id="theme">
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="../assets/css/monokai.css">
+        <!--[if lt IE 9]>
+        <script src="../assets/js/html5shiv.js"></script>
+        <![endif]-->
+        <script src="../assets/js/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="reveal">
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div id="slides" class="slides">
+                <section>
+                    <div>Loading Slides...</div>
+                </section>
+            </div>
+        </div>
+        <script src="../assets/js/reveal.js"></script>
+        <script type="text/javascript">
+            function initSlide() {
+                // More info https://github.com/hakimel/reveal.js#configuration
+                Reveal.initialize({
+                    controls: true,
+                    progress: true,
+                    history: true,
+                    center: true,
+                    hash: true,
+                    loop: false,
+                    controlsLayout: 'bottom-right',
+                    transition: 'slide',
+                    dependencies: [
+                        { src: '../assets/js/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                        { src: '../assets/js/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                        { src: '../assets/js/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                        { src: '../assets/js/search.js', async: true },
+                        { src: '../assets/js/math.js', async: true },
+                        { src: '../assets/js/zoom.js', async: true },
+                        { src: '../assets/js/notes.js', async: true }
+                    ]
+                });
+            }
+
+            $(function () {
+                // update title, select a slide to show, default to number 1
+                $.get("slide.html", function(content) {
+                            $("#slides").html(content);
+                            initSlide();
+                    }).fail(function() {
+                            $(document).attr("title", "Something is wrong");
+                            $("#slides").html("<div>Something is wrong!</div>");
+                    });
+            });
+        </script>
+    </body>
+</html>
