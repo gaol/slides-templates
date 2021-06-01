@@ -1,66 +1,252 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Vertx Introduction</title>
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" href="../assets/css/reset.css">
-        <link rel="stylesheet" href="../assets/css/reveal.css">
-        <!-- Themes: black, white, beige, blood, moon, simple, solarized, template, league, night, serif, sky -->
-        <link rel="stylesheet" href="../assets/theme/moon.css" id="theme">
-        <!-- Theme used for syntax highlighting of code -->
-        <link rel="stylesheet" href="../assets/css/monokai.css">
-        <!--[if lt IE 9]>
-        <script src="../assets/js/html5shiv.js"></script>
-        <![endif]-->
-        <script src="../assets/js/jquery.min.js"></script>
-    </head>
-    <body>
-        <div class="reveal">
-            <!-- Any section element inside of this container is displayed as a slide -->
-            <div id="slides" class="slides">
-                <section>
-                    <div>Loading Slides...</div>
-                </section>
-            </div>
-        </div>
-        <script src="../assets/js/reveal.js"></script>
-        <script type="text/javascript">
-            function initSlide() {
-                // More info https://github.com/hakimel/reveal.js#configuration
-                Reveal.initialize({
-                    controls: true,
-                    progress: true,
-                    history: true,
-                    center: true,
-                    hash: true,
-                    loop: false,
-                    controlsLayout: 'bottom-right',
-                    transition: 'slide',
-                    dependencies: [
-                        { src: '../assets/js/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                        { src: '../assets/js/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                        { src: '../assets/js/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-                        { src: '../assets/js/search.js', async: true },
-                        { src: '../assets/js/math.js', async: true },
-                        { src: '../assets/js/zoom.js', async: true },
-                        { src: '../assets/js/notes.js', async: true }
-                    ]
-                });
-            }
 
-            $(function () {
-                // update title, select a slide to show, default to number 1
-                $.get("slide.html", function(content) {
-                            $("#slides").html(content);
-                            initSlide();
-                    }).fail(function() {
-                            $(document).attr("title", "Something is wrong");
-                            $("#slides").html("<div>Something is wrong!</div>");
-                    });
-            });
-        </script>
-    </body>
+	<head>
+		<meta charset="utf-8">
+
+		<title>Vertx Introduction</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../dist/reveal.css">
+		<link rel="stylesheet" href="../dist/theme/moon.css" id="theme">
+        <link rel="stylesheet" href="../plugin/highlight/monokai.css">
+	</head>
+
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+
+                <section>
+                    <h3><br></h3>
+                    <h2 style="text-align: justify;">Introduction to Eclipse Vert.x</h2>
+                    <div style="text-align: justify;">
+                        <span>Lin Gao &lt;lgao@redhat.com&gt;</span><br>
+                        <span>Middleware Runtime SET</span><br>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Agenda</h3>
+                    <p></p>
+                    <ul>
+                        <li>
+                        <span>What is Eclipse Vert.x</span><br>
+                        </li>
+                        <li>
+                        <span>Vert.x Ecosystem</span><br>
+                        </li>
+                        <li>
+                        <span>Demos</span><br>
+                        </li>
+                    </ul>
+                    <p></p>
+                    <div>
+                        <ul></ul><br/>
+                        <ul></ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="absolute-element">What is Eclipse Vert.X?</h2>
+                    <blockquote class="absolute-element fragment">"
+                        Eclipse Vert.x is a
+                        tool-kit for building reactive applications on the JVM."
+                        <br><br>
+                    </blockquote>
+                    <br>
+                </section>
+
+                <section>
+                    <h3>Reactive Applications</h3>
+                    <div>
+                        <img src="reactive-traits.svg" style="width: 800px; height: 400px;"/>
+                    </div>
+                    <div style="text-align: justify; text-align: center;">
+                        <a href="https://www.reactivemanifesto.org/" target="_blank">The Reactive Manifesto</a>
+                    </div>
+                    </section>
+
+                    <section>
+                    <h3>Polyglot</h3>
+                    <div>
+                        <blockquote>"You can use Vert.x with multiple languages including Java, JavaScript, Groovy, Ruby, Ceylon, Scala and Kotlin."
+                        <br /><br />
+                        </blockquote>
+                    </div>
+                    <div class="fragment fade-down">
+                        On JVM
+                    </div>
+                </section>
+
+                <section data-transition="none" >
+                    <h3>Reactor</h3>
+                    <div>
+                        <img src="event-loop.png" style="width: 700px;"/>
+                    </div>
+                    </section>
+                    <section data-transition="none" data-transition-speed="fast">
+                    <h3>Multi-Reactor</h3>
+                    <div>
+                        <img src="event-loop_multiple.png" style="width: 700px;" />
+                    </div>
+                </section>
+
+            <section>
+            <h3>What does Vert.x Application look like?</h3>
+            </section>
+
+            <section>
+            <section>
+                <h2>JAVA</h2>
+                <div>
+                <a href="Server.java" target="_blank">Server.java:</a>
+                <pre><code data-line-numbers="2,4">import io.vertx.core.AbstractVerticle;
+            public class Server extends AbstractVerticle {
+            public void start() {
+                vertx.createHttpServer().requestHandler(req -> {
+                req.response()
+                    .putHeader("content-type", "text/plain")
+                    .end("Hello from Vert.x! " + Thread.currentThread());
+                }).listen(8080);
+            }
+            }</code></pre>
+                </div>
+                <div><pre><code>docker run -i -t --rm -p 8080:8080 -v $PWD:/verticles docker.io/aoingl/vert3-exec-jdk run /verticles/Server.java</code></pre></div>
+            </section>
+            <section>
+                <h2>JAVASCRIPT</h2>
+                <div>
+                <a href="server.js" target="_blank">server.js:</a>
+                <pre><code data-line-numbers="2">vertx.createHttpServer()
+            .requestHandler(function (req) {
+                req.response()
+                .putHeader("content-type", "text/plain")
+                .end("Hello from Vert.x!");
+            }).listen(8080);</code></pre>
+                </div>
+                <div><pre><code>docker run -i -t --rm -p 8080:8080 -v $PWD:/verticles docker.io/vertx/vertx3-exec run /verticles/server.js</code></pre></div>
+            </section>
+
+            </section>
+
+            <section>
+            <h4>Vert.x Core</h4>
+            <div>
+                <pre><code>Vertx vertx = Vertx.vertx();</code></pre>
+            </div>
+                <div>
+<pre><code>
+    VertxOptions options = new VertxOptions()
+    .setEventLoopPoolSize(10)
+    .setEventBusOptions(new EventBusOptions()
+        .setClusterPublicHost("10.0.0.4")
+        .setClusterPublicPort(9999));
+    Vertx vertx = Vertx.vertx(options);</code></pre>
+                </div>
+            </section>
+
+            <section>
+            <h4>Vert.x Verticle</h4>
+            <div>
+                <pre><code>vertx.deployVerticle(String name, 
+                Handler&lt;AsyncResult&lt;String&gt;&gt; completionHandler);</code></pre>
+            </div>
+            <div>
+                <ul>
+                <li>Block of codes that get deployed and run by Vert.x</li>
+                <li class="fragment" data-fragment-index="0">Verticles have a simple start / stop life-cycle</li>
+                <li class="fragment" data-fragment-index="1">2 types of Verticles:</li>
+                <ul class="fragment" data-fragment-index="1">
+                    <li>Standard Verticle</li>
+                    <li>Worker Verticle</li>
+                </ul>
+                <li class="fragment" data-fragment-index="2">Single-threaded</li>
+                <li class="fragment" data-fragment-index="4">Communicate with each other via EventBus</li>
+                </ul>
+            </div>
+            </section>
+
+            <section data-transition="none">
+            <h4>Event Bus</h4>
+            <div>
+                <pre><code>EventBus eventBus = vertx.eventBus();</code></pre>
+            </div>
+            <div>
+                <ul>
+                <li class="fragment" data-fragment-index="0">The Nervous system of Vert.x</li>
+                <li class="fragment" data-fragment-index="1">Register handlers for any address</li>
+                <li class="fragment" data-fragment-index="2">Send or publish messages to any address</li>
+                <li class="fragment" data-fragment-index="3">Types of messages:</li>
+                    <ul class="fragment" data-fragment-index="3">
+                    <li>Primitive Types / Buffer</li>
+                    <li>JsonObject / JsonArray</li>
+                    <li>Any type with codecs registered</li>
+                    </ul>
+                </ul>
+            </div>
+            </section>
+
+            <section data-transition="none" style="padding-left: -20px;">
+            <h4>Event Bus</h4>
+            <div>
+                <pre><code>EventBus eventBus = vertx.eventBus();</code></pre>
+            </div>
+            <div>
+                <ul style="font-size: smaller;">
+                <li>Message Delivery:</li>
+                <ul>
+                    <li>Point-to-Point:<pre><code>eventBus.send(String address, Object message)</code></pre></li>
+                    <li>Request / Response:<pre><code>eventBus.request(String address,
+                Object message,
+                Handler&lt;AsyncResult&lt;Message&lt;T&gt;&gt;&gt; replyHandler);</code></pre></li>
+                    <li>Publish / Subscribe:<pre><code>eventBus.publish(String address, Object message);</code></pre></li>
+                </ul>
+                <li>Best-effort delivery</li>
+                </ul>
+            </div>
+            </section>
+
+            <section data-transition="none">
+            <h4>Typical Vert.x Web application</h4>
+            <div>
+                <img src="event-bus.png" />
+            </div>
+            </section>
+
+            <section>
+            <h4>Vert.x Ecosystem</h4>
+            <div>
+                <img src="vertx_ecosystem.svg" style="width: 700px; background-color: white;"/>
+            </div>
+                <div>
+                    <a href="https://vertx.io/">Vert.x Homepage</a>
+                </div>
+            </section>
+
+            <section>
+            <h3>Demos</h3>
+            <div>Q / A</div>
+            </section>
+
+			</div>
+		</div>
+
+        <script src="../dist/reveal.js"></script>
+        <script src="../plugin/markdown/markdown.js"></script>
+        <script src="../plugin/highlight/highlight.js"></script>
+        <script src="../plugin/notes/notes.js"></script>
+		<script>
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+
+	</body>
 </html>
